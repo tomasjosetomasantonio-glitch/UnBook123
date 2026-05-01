@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UnBook — Plataforma Académica</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --green: #00c853;
+            --green-dark: #00a040;
+            --green-pale: #e8faf0;
+            --ink: #0d1117;
+            --ink2: #1c2333;
+            --muted: #6e7a8a;
+            --muted2: #8b97a6;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-light: rgba(0, 0, 0, 0.08);
+            --card: rgba(255, 255, 255, 0.04);
+            --card-hover: rgba(255, 255, 255, 0.07);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+            --font: 'Sora', sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+            --wa: #25D366;
+            --wa-dark: #128C7E;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--ink);
+            color: #e4e8ed;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ─── NOISE TEXTURE ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── GLOW ORBS ─── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: #00c853;
+            top: -200px;
+            right: -100px;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: #1a73e8;
+            bottom: -100px;
+            left: -80px;
+        }
+
+        /* ─── SCREENS ─── */
+        .screen {
+            display: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* ─── LOGIN SCREEN ─── */
+        #loginScreen {
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-wrap {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .brand-logo {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #00c853 0%, #00e676 50%, #69f0ae 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-sub {
+            font-size: 0.85rem;
+            color: var(--muted);
+            letter-spacing: 0.05em;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .field-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--muted2);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.5rem;
+        }
+
+        .field-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-sm);
+            padding: 0.85rem 1rem;
+            color: #e4e8ed;
+            font-family: var(--font);
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .field-input:focus {
+            border-color: var(--green);
+            background: rgba(0, 200, 83, 0.06);
+            box-shadow: 0 0 0 3px rgba(0, 200, 83, 0.12);
+        }
+
+        .field-input::placeholder {
+            color: var(--muted);
+        }
+
+        .btn-primary {
+            width: 100%;
+            margin-top: 1.25rem;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: #fff;
+            font-family: var(--font);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.02em;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(0, 200, 83, 0.35);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        /* ─── DASHBOARD SCREEN ─── */
+        #dashboardScreen {
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* NAV */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            height: 64px;
+            background: rgba(13, 17, 23, 0.85);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .nav-logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #00c853, #69f0ae);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.25rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.25rem;
+        }
+
+        .nav-tab {
+            padding: 0.45rem 1.1rem;
+            border: none;
+            background: transparent;
+            color: var(--muted2);
+            font-family: var(--font);
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.2s;
+        }
+
+        .nav-tab.active {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .nav-tab:hover:not(.active) {
+            color: #e4e8ed;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green), var(--green-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .user-name {
+            font-size: 0.82rem;
+            color: var(--muted2);
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: var(--font);
+            font-size: 0.75rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: var(--radius-xs);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            border-color: #ff5252;
+            color: #ff5252;
+        }
+
+        /* CONTENT */
+        .content-area {
+            flex: 1;
+            padding: 2.5rem 2rem;
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* SECTION HEADER */
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #e4e8ed;
+        }
+
+        .section-desc {
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-top: 0.4rem;
+        }
+
+        /* SERVICE CARDS */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.75rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .service-card.green::before {
+            background: linear-gradient(90deg, var(--green), var(--green-dark));
+        }
+
+        .service-card.blue::before {
+            background: linear-gradient(90deg, #1a73e8, #4285f4);
+        }
+
+        .service-card.amber::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+
+        .service-card:hover:not(.disabled) {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .service-card:hover:not(.disabled)::before {
+            opacity: 1;
+        }
+
+        .service-card.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .svc-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .svc-icon.green {
+            background: rgba(0, 200, 83, 0.12);
+        }
+
+        .svc-icon.blue {
+            background: rgba(26, 115, 232, 0.12);
+        }
+
+        .svc-icon.amber {
+            background: rgba(245, 158, 11, 0.12);
+        }
+
+        .svc-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #e4e8ed;
+            margin-bottom: 0.4rem;
+        }
+
+        .svc-desc {
+            font-size: 0.83rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .svc-badge {
+            display: inline-block;
+            margin-top: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 50px;
+            background: rgba(0, 200, 83, 0.12);
+            color: var(--green);
+            letter-spacing: 0.05em;
+        }
+
+        .svc-badge.disabled {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--muted);
+        }
+
+        .svc-arrow {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            color: var(--muted);
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+
+        .service-card:hover:not(.disabled) .svc-arrow {
+            color: var(--green);
+            transform: translate(2px, -2px);
+        }
+
+        /* HELP TAB */
+        .help-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .help-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem;
+        }
+
+        .help-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--green);
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .help-text {
+            font-size: 0.88rem;
+            color: #c4cdd6;
+            line-height: 1.5;
+        }
+
+        .prazos {
+            background: rgba(0, 200, 83, 0.06);
+            border: 1px solid rgba(0, 200, 83, 0.2);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem 1.5rem;
+        }
+
+        .prazos-title {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--green);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.75rem;
+        }
+
+        .prazo-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            padding: 0.35rem 0;
+            color: var(--muted2);
+        }
+
+        .prazo-val {
+            color: #e4e8ed;
+            font-weight: 500;
+        }
+
+        /* ABOUT TAB */
+        .about-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        .about-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #00c853, #69f0ae);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .about-tagline {
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .about-row:last-child {
+            border-bottom: none;
+        }
+
+        .about-key {
+            color: var(--muted2);
+        }
+
+        .about-val {
+            color: #e4e8ed;
+            font-weight: 500;
+        }
+
+        /* ─── MODAL ─── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 1rem;
+            overflow-y: auto;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--ink2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 520px;
+            overflow: hidden;
+            animation: slideDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 1.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .modal-icon {
+            font-size: 1.4rem;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e4e8ed;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.06);
+            border: none;
+            border-radius: var(--radius-xs);
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.15s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 82, 82, 0.15);
+            color: #ff5252;
+        }
+
+        .modal-body {
+            padding: 1.75rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        /* FORM STYLES */
+        .form-group {
+            margin-bottom: 1.1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        label.fl {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--muted2);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 0.4rem;
+        }
+
+        .fi {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: var(--radius-xs);
+            padding: 0.75rem 0.85rem;
+            color: #e4e8ed;
+            font-family: var(--font);
+            font-size: 0.88rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .fi:focus {
+            border-color: var(--green);
+            background: rgba(0, 200, 83, 0.05);
+            box-shadow: 0 0 0 3px rgba(0, 200, 83, 0.1);
+        }
+
+        .fi::placeholder {
+            color: var(--muted);
+        }
+
+        select.fi {
+            cursor: pointer;
+        }
+
+        select.fi option {
+            background: var(--ink2);
+            color: #e4e8ed;
+        }
+
+        textarea.fi {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-footer {
+            padding: 1.25rem 1.75rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--muted2);
+            font-family: var(--font);
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #e4e8ed;
+        }
+
+        .btn-whatsapp {
+            flex: 2;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, var(--wa), var(--wa-dark));
+            border: none;
+            border-radius: var(--radius-sm);
+            color: #fff;
+            font-family: var(--font);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-whatsapp:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
+        }
+
+        .btn-whatsapp:active {
+            transform: translateY(0);
+        }
+
+        .wa-icon {
+            width: 18px;
+            height: 18px;
+            fill: #fff;
+            flex-shrink: 0;
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--ink2);
+            border: 1px solid var(--green);
+            border-radius: var(--radius-sm);
+            padding: 0.9rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.88rem;
+            color: #e4e8ed;
+            z-index: 2000;
+            animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .toast-icon {
+            font-size: 1.1rem;
+        }
+
+        .toast.hide {
+            animation: slideOutRight 0.3s ease forwards;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+        }
+
+        /* MOBILE */
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 0 1rem;
+            }
+
+            .nav-tabs {
+                gap: 0;
+            }
+
+            .nav-tab {
+                padding: 0.4rem 0.7rem;
+                font-size: 0.75rem;
+            }
+
+            .content-area {
+                padding: 1.5rem 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-body {
+                max-height: 60vh;
+            }
+
+            .user-name {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <!-- ═══ LOGIN SCREEN ═══ -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-wrap">
+            <div class="brand">
+                <span class="brand-logo">UnBook</span>
+                <span class="brand-sub">Plataforma Académica · Moçambique-IPM</span>
+            </div>
+            <div class="glass-card">
+                <div class="form-group">
+                    <label class="field-label">Contacto</label>
+                    <input id="loginContacto" class="field-input" type="text" placeholder="Email ou número de telefone"
+                        autocomplete="off">
+                </div>
+                <button class="btn-primary" onclick="handleLogin()">Entrar na Plataforma</button>
+                <p id="loginError" style="color:#ff5252;font-size:0.82rem;margin-top:0.75rem;display:none;"></p>
+            </div>
+            <p class="login-footer">Desenvolvido por <strong style="color:#e4e8ed">Tomás José</strong> · UnBook
+                Solutions 2025</p>
+        </div>
+    </div>
+
+    <!-- ═══ DASHBOARD SCREEN ═══ -->
+    <div id="dashboardScreen" class="screen">
+
+        <nav class="navbar">
+            <span class="nav-logo">UnBook-I.P.M</span>
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="pedidos">Serviços</button>
+                <button class="nav-tab" data-tab="ajuda">Ajuda</button>
+                <button class="nav-tab" data-tab="sobre">Sobre</button>
+            </div>
+            <div class="nav-user">
+                <div class="user-avatar" id="userAvatar">?</div>
+                <span class="user-name" id="userNameDisplay"></span>
+                <button class="btn-logout" onclick="handleLogout()">Sair</button>
+            </div>
+        </nav>
+
+        <div class="content-area">
+
+            <!-- SERVIÇOS TAB -->
+            <div id="pedidosTab" class="tab-panel active">
+                <div class="section-header">
+                    <h1 class="section-title">O que precisas hoje?</h1>
+                    <p class="section-desc">Seleciona o serviço e preenche o formulário — a tua solicitação chega direto
+                        ao WhatsApp do Director. <br> Trabalho cietifico: 200MT <br> Projecto Integrado: 450MT <br>
+                        Copia: 2 <br>
+                        Impressão: 3 <br> Encadernação: 40MT</p>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card green" onclick="openModal('cientifico')">
+                        <span class="svc-arrow">↗</span>
+                        <div class="svc-icon green">📚</div>
+                        <p class="svc-title">Trabalhos Científicos</p>
+                        <p class="svc-desc">TCC, monografias, artigos científicos, pesquisas académicas e muito mais.
+                        </p>
+                        <span class="svc-badge">Disponível</span>
+                    </div>
+                    <div class="service-card blue" onclick="openModal('informatica')">
+                        <span class="svc-arrow">↗</span>
+                        <div class="svc-icon blue">💻</div>
+                        <p class="svc-title">Soluções Informáticas</p>
+                        <p class="svc-desc">Assistência técnica especializada para computadores, telemóveis e
+                            impressoras.</p>
+                        <span class="svc-badge"
+                            style="background:rgba(26,115,232,0.12);color:#4285f4;">Disponível</span>
+                    </div>
+                    <div class="service-card amber disabled">
+                        <div class="svc-icon amber">🎨</div>
+                        <p class="svc-title">Design Gráfico</p>
+                        <p class="svc-desc">Criação de logótipos, banners, cartazes e material visual profissional.</p>
+                        <span class="svc-badge disabled">Em breve</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AJUDA TAB -->
+            <div id="ajudaTab" class="tab-panel">
+                <div class="section-header">
+                    <h1 class="section-title">Como funciona?</h1>
+                    <p class="section-desc">Simples, rápido e direto ao WhatsApp do nosso suporte.</p>
+                </div>
+                <div class="help-grid">
+                    <div class="help-item">
+                        <div class="help-num">1</div>
+                        <p class="help-text">Escolhe o serviço que precisas na aba <strong
+                                style="color:#e4e8ed">Serviços</strong>.</p>
+                    </div>
+                    <div class="help-item">
+                        <div class="help-num">2</div>
+                        <p class="help-text">Preenche todos os campos do formulário com os detalhes do teu pedido.</p>
+                    </div>
+                    <div class="help-item">
+                        <div class="help-num">3</div>
+                        <p class="help-text">Clica em <strong style="color:var(--wa)">Enviar via WhatsApp</strong> e a
+                            mensagem abre automaticamente.</p>
+                    </div>
+                    <div class="help-item">
+                        <div class="help-num">4</div>
+                        <p class="help-text">Confirma o envio no WhatsApp e aguarda o contacto da nossa equipa.</p>
+                    </div>
+                </div>
+                <div class="prazos">
+                    <p class="prazos-title">⏱ Prazos médios de resposta</p>
+                    <div class="prazo-row"><span>Trabalhos Científicos</span><span class="prazo-val">24 – 48
+                            horas</span></div>
+                    <div class="prazo-row"><span>Soluções Informáticas</span><span class="prazo-val">2 – 12 horas</span>
+                    </div>
+                    <div class="prazo-row"><span>Design Gráfico</span><span class="prazo-val">Em breve</span></div>
+                </div>
+            </div>
+
+            <!-- SOBRE TAB -->
+            <div id="sobreTab" class="tab-panel">
+                <div class="section-header">
+                    <h1 class="section-title">Sobre a UnBook</h1>
+                    <p class="section-desc">Plataforma académica de referência em Moçambique.</p>
+                </div>
+                <div class="about-card">
+                    <p class="about-logo">UnBook</p>
+                    <p class="about-tagline">Soluções académicas e tecnológicas de confiança</p>
+                    <div class="about-row"><span class="about-key">Desevolvidor & Diretor</span><span
+                            class="about-val">Tomás José</span></div>
+                    <div class="about-row"><span class="about-key">Empresa</span><span class="about-val">UnBook
+                            Solutions</span></div>
+                    <div class="about-row"><span class="about-key">Parceria</span><span class="about-val">Thomaz
+                            Tech</span></div>
+                    <div class="about-row"><span class="about-key">Fundada em</span><span class="about-val">1 de Maio de
+                            2026</span>
+                    </div>
+                    <div class="about-row"><span class="about-key">WhatsApp de suporte</span><span class="about-val"
+                            style="color:var(--wa)">+258 83 494 5482</span></div>
+                    <div class="about-row"><span class="about-key">Versão</span><span class="about-val"
+                            style="font-family:var(--mono);font-size:0.82rem;">v1.0.0</span></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ═══ MODAL: TRABALHO CIENTÍFICO ═══ -->
+    <div id="modalCientifico" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <span class="modal-icon">📚</span>
+                    <span class="modal-title">Trabalho Científico</span>
+                </div>
+                <button class="modal-close" onclick="closeModal('cientifico')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="fl">Tema do trabalho *</label>
+                    <input class="fi" type="text" id="c_tema" placeholder="Ex: Impacto das Redes Sociais na Educação">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="fl">Prazo de entrega *</label>
+                        <input class="fi" type="text" id="c_duracao" placeholder="Ex: 7 dias">
+                    </div>
+                    <div class="form-group">
+                        <label class="fl">Data limite *</label>
+                        <input class="fi" type="date" id="c_data_entrega">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="fl">Método de envio *</label>
+                        <select class="fi" id="c_metodo">
+                            <option value="">Selecionar...</option>
+                            <option>Email</option>
+                            <option>WhatsApp</option>
+                            <option>Ambos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="fl">Forma de pagamento *</label>
+                        <select class="fi" id="c_pagamento">
+                            <option value="">Selecionar...</option>
+                            <option>Transferência Bancária</option>
+                            <option>M-Pesa</option>
+                            <option>e-Mola</option>
+                            <option>Presencial</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="fl">Nome do formador *</label>
+                        <input class="fi" type="text" id="c_formador" placeholder="Nome do professor">
+                    </div>
+                    <div class="form-group">
+                        <label class="fl">Módulo / Disciplina *</label>
+                        <input class="fi" type="text" id="c_modulo" placeholder="Ex: Metodologia">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="fl">Qualificação *</label>
+                        <input class="fi" type="text" id="c_qualificacao" placeholder="Ex: Licenciatura">
+                    </div>
+                    <div class="form-group">
+                        <label class="fl">Nível / Ano *</label>
+                        <input class="fi" type="text" id="c_nivel" placeholder="Ex: 3º Ano">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="fl">Nome do formando *</label>
+                        <input class="fi" type="text" id="c_formando" placeholder="Teu nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label class="fl">Código / Nº estudante *</label>
+                        <input class="fi" type="text" id="c_codigo" placeholder="Ex: 2021001">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="fl">Outros detalhes (opcional)</label>
+                    <textarea class="fi" id="c_outros"
+                        placeholder="Instruções específicas, normas, requisitos especiais..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('cientifico')">Cancelar</button>
+                <button class="btn-whatsapp" onclick="enviarCientifico()">
+                    <svg class="wa-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                    </svg>
+                    Enviar via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ MODAL: SOLUÇÃO INFORMÁTICA ═══ -->
+    <div id="modalInformatica" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <span class="modal-icon">💻</span>
+                    <span class="modal-title">Solução Informática</span>
+                </div>
+                <button class="modal-close" onclick="closeModal('informatica')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="fl">Descreve o problema *</label>
+                    <textarea class="fi" id="i_problema"
+                        placeholder="Explica o que acontece com o dispositivo, quando começou, etc..."
+                        style="min-height:100px"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="fl">Tipo de dispositivo *</label>
+                        <select class="fi" id="i_dispositivo">
+                            <option value="">Selecionar...</option>
+                            <option>Computador / PC</option>
+                            <option>Portátil / Laptop</option>
+                            <option>Telemóvel / Smartphone</option>
+                            <option>Impressora</option>
+                            <option>Tablet</option>
+                            <option>Outro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="fl">Marca *</label>
+                        <input class="fi" type="text" id="i_marca" placeholder="Ex: Samsung, Dell, HP">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="fl">Urgência</label>
+                    <select class="fi" id="i_urgencia">
+                        <option value="Normal">Normal</option>
+                        <option value="Urgente">Urgente</option>
+                        <option value="Muito Urgente">Muito Urgente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="fl">Informações adicionais (opcional)</label>
+                    <textarea class="fi" id="i_extras" placeholder="Modelo, ano, sistema operativo, etc..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('informatica')">Cancelar</button>
+                <button class="btn-whatsapp" onclick="enviarInformatica()">
+                    <svg class="wa-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                    </svg>
+                    Enviar via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const WHATSAPP_NUMBER = '258834945482';
+        let usuarioAtual = null;
+
+        /* ─── AUTH ─── */
+        function handleLogin() {
+            const contacto = document.getElementById('loginContacto').value.trim();
+            const errEl = document.getElementById('loginError');
+            if (!contacto) {
+                errEl.textContent = 'Por favor, insere o teu email ou número de telefone.';
+                errEl.style.display = 'block';
+                return;
+            }
+            errEl.style.display = 'none';
+            usuarioAtual = { contacto };
+            localStorage.setItem('unbook_user', JSON.stringify(usuarioAtual));
+            showDashboard();
+        }
+
+        document.getElementById('loginContacto').addEventListener('keydown', e => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        function handleLogout() {
+            localStorage.removeItem('unbook_user');
+            usuarioAtual = null;
+            document.getElementById('dashboardScreen').classList.remove('active');
+            document.getElementById('loginScreen').classList.add('active');
+            document.getElementById('loginContacto').value = '';
+        }
+
+        function showDashboard() {
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('dashboardScreen').classList.add('active');
+            const av = usuarioAtual.contacto.substring(0, 2).toUpperCase();
+            document.getElementById('userAvatar').textContent = av;
+            document.getElementById('userNameDisplay').textContent = usuarioAtual.contacto;
+        }
+
+        /* ─── TABS ─── */
+        document.querySelectorAll('.nav-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const tab = btn.dataset.tab;
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                document.getElementById(tab + 'Tab').classList.add('active');
+            });
+        });
+
+        /* ─── MODAL ─── */
+        function openModal(tipo) {
+            document.getElementById('modal' + tipo.charAt(0).toUpperCase() + tipo.slice(1)).classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(tipo) {
+            document.getElementById('modal' + tipo.charAt(0).toUpperCase() + tipo.slice(1)).classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function (e) {
+                if (e.target === this) {
+                    this.classList.remove('open');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        /* ─── WHATSAPP ─── */
+        function getDataBR(str) {
+            if (!str) return 'Não informado';
+            const parts = str.split('-');
+            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            return str;
+        }
+
+        function val(id) {
+            const el = document.getElementById(id);
+            return (el && el.value.trim()) ? el.value.trim() : 'Não informado';
+        }
+
+        function gerarMsgCientifico() {
+            const agora = new Date();
+            const dt = `${agora.getDate().toString().padStart(2, '0')}/${(agora.getMonth() + 1).toString().padStart(2, '0')}/${agora.getFullYear()} ${agora.getHours().toString().padStart(2, '0')}:${agora.getMinutes().toString().padStart(2, '0')}`;
+
+            return `╔══════════════════════════════╗
+║  📚 NOVO PEDIDO ACADÉMICO   ║
+╚══════════════════════════════╝
+
+*👤 SOLICITANTE*
+Contacto: ${usuarioAtual ? usuarioAtual.contacto : 'Não identificado'}
+
+*📋 DETALHES DO TRABALHO*
+• *Tema:* ${val('c_tema')}
+• *Módulo:* ${val('c_modulo')}
+• *Formador:* ${val('c_formador')}
+• *Qualificação:* ${val('c_qualificacao')}
+• *Nível/Ano:* ${val('c_nivel')}
+• *Formando:* ${val('c_formando')}
+• *Código/Nº:* ${val('c_codigo')}
+
+*⏰ PRAZOS & ENTREGA*
+• *Prazo:* ${val('c_duracao')}
+• *Data limite:* ${getDataBR(document.getElementById('c_data_entrega').value) || 'Não informado'}
+• *Método de envio:* ${val('c_metodo')}
+
+*💳 PAGAMENTO*
+• *Forma:* ${val('c_pagamento')}
+
+*📝 OBSERVAÇÕES*
+${val('c_outros')}
+
+╔══════════════════════════════╗
+║ ⏱ Enviado: ${dt}  ║
+╚══════════════════════════════╝`;
+        }
+
+        function gerarMsgInformatica() {
+            const agora = new Date();
+            const dt = `${agora.getDate().toString().padStart(2, '0')}/${(agora.getMonth() + 1).toString().padStart(2, '0')}/${agora.getFullYear()} ${agora.getHours().toString().padStart(2, '0')}:${agora.getMinutes().toString().padStart(2, '0')}`;
+
+            return `╔══════════════════════════════╗
+║  💻 PEDIDO INFORMÁTICO      ║
+╚══════════════════════════════╝
+
+*👤 SOLICITANTE*
+Contacto: ${usuarioAtual ? usuarioAtual.contacto : 'Não identificado'}
+
+*🔧 DETALHE DO PROBLEMA*
+${val('i_problema')}
+
+*📱 DISPOSITIVO*
+• *Tipo:* ${val('i_dispositivo')}
+• *Marca:* ${val('i_marca')}
+• *Urgência:* ${val('i_urgencia')}
+
+*📝 INFORMAÇÕES ADICIONAIS*
+${val('i_extras')}
+
+╔══════════════════════════════╗
+║ ⏱ Enviado: ${dt}  ║
+╚══════════════════════════════╝`;
+        }
+
+        function validarCientifico() {
+            const campos = ['c_tema', 'c_duracao', 'c_metodo', 'c_formador', 'c_modulo', 'c_qualificacao', 'c_nivel', 'c_formando', 'c_codigo', 'c_pagamento'];
+            for (const id of campos) {
+                const el = document.getElementById(id);
+                if (!el.value.trim()) {
+                    el.focus();
+                    el.style.borderColor = '#ff5252';
+                    setTimeout(() => el.style.borderColor = '', 2000);
+                    showToast('⚠️ Preenche todos os campos obrigatórios.');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function validarInformatica() {
+            const campos = ['i_problema', 'i_dispositivo', 'i_marca'];
+            for (const id of campos) {
+                const el = document.getElementById(id);
+                if (!el.value.trim()) {
+                    el.focus();
+                    el.style.borderColor = '#ff5252';
+                    setTimeout(() => el.style.borderColor = '', 2000);
+                    showToast('⚠️ Preenche todos os campos obrigatórios.');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function enviarCientifico() {
+            if (!validarCientifico()) return;
+            const msg = gerarMsgCientifico();
+            abrirWhatsApp(msg);
+            closeModal('cientifico');
+            showToast('✅ WhatsApp aberto com a mensagem formatada!');
+            document.querySelectorAll('#modalCientifico .fi').forEach(el => el.value = '');
+        }
+
+        function enviarInformatica() {
+            if (!validarInformatica()) return;
+            const msg = gerarMsgInformatica();
+            abrirWhatsApp(msg);
+            closeModal('informatica');
+            showToast('✅ WhatsApp aberto com a mensagem formatada!');
+            document.querySelectorAll('#modalInformatica .fi').forEach(el => el.value = '');
+        }
+
+        function abrirWhatsApp(mensagem) {
+            const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensagem)}`;
+            window.open(url, '_blank');
+        }
+
+        /* ─── TOAST ─── */
+        function showToast(msg) {
+            const old = document.querySelector('.toast');
+            if (old) old.remove();
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.innerHTML = `<span>${msg}</span>`;
+            document.body.appendChild(t);
+            setTimeout(() => {
+                t.classList.add('hide');
+                setTimeout(() => t.remove(), 400);
+            }, 3500);
+        }
+
+        /* ─── INIT ─── */
+        (function init() {
+            const stored = localStorage.getItem('unbook_user');
+            if (stored) {
+                try {
+                    usuarioAtual = JSON.parse(stored);
+                    showDashboard();
+                } catch (e) { localStorage.removeItem('unbook_user'); }
+            }
+        })();
+    </script>
+</body>
+
+</html>
