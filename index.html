@@ -229,6 +229,12 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .a-key{color:var(--mut2)}
 .a-val{color:var(--txt);font-weight:500}
 
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--bd);border-radius:var(--rs);padding:1.25rem;text-align:center;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.02)}
+.upload-zone:hover{border-color:var(--g);background:rgba(0,200,83,.03)}
+.upload-zone.drag-over{border-color:var(--g);background:rgba(0,200,83,.06);transform:scale(1.01)}
+.upload-zone.has-file{border-style:solid;border-color:rgba(0,200,83,.3);text-align:left;cursor:default}
+
 /* TOAST */
 .toast{position:fixed;bottom:1.75rem;right:1.75rem;background:var(--ink2);border:1px solid var(--g);border-radius:var(--rs);padding:.85rem 1.15rem;display:flex;align-items:center;gap:.65rem;font-size:.84rem;color:var(--txt);z-index:2000;animation:sir .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 32px rgba(0,0,0,.5)}
 .toast.hide{animation:sor .3s ease forwards}
@@ -264,6 +270,15 @@ tr:hover td{background:rgba(255,255,255,.02)}
 <div id="loginScreen" class="screen active">
   <div class="login-wrap">
     <div class="brand">
+      <div style="display:flex;justify-content:center;margin-bottom:.75rem">
+        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="72" rx="20" fill="url(#lg2)"/>
+          <path d="M20 23h9v18a7 7 0 0014 0V23h9v18a16 16 0 01-32 0V23z" fill="white" opacity=".96"/>
+          <circle cx="52" cy="49" r="5.5" fill="white" opacity=".65"/>
+          <rect x="20" y="55" width="22" height="3" rx="1.5" fill="white" opacity=".3"/>
+          <defs><linearGradient id="lg2" x1="0" y1="0" x2="72" y2="72" gradientUnits="userSpaceOnUse"><stop stop-color="#00c853"/><stop offset="1" stop-color="#00695c"/></linearGradient></defs>
+        </svg>
+      </div>
       <span class="brand-logo">UnBook</span>
       <span class="brand-ver">v2.0.0</span>
       <p class="brand-sub">Plataforma Académica · Moçambique-IPM</p>
@@ -296,7 +311,16 @@ tr:hover td{background:rgba(255,255,255,.02)}
 
   <!-- TOPBAR -->
   <nav class="topbar">
-    <span class="top-logo">UnBook-I.P.M</span>
+    <!-- LOGO SVG UnBook Solutions -->
+    <div style="display:flex;align-items:center;gap:.6rem">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="url(#lg1)"/>
+        <path d="M9 10h4v8a3 3 0 006 0v-8h4v8a7 7 0 01-14 0v-8z" fill="white" opacity=".95"/>
+        <circle cx="23" cy="22" r="2.5" fill="white" opacity=".7"/>
+        <defs><linearGradient id="lg1" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#00c853"/><stop offset="1" stop-color="#00695c"/></linearGradient></defs>
+      </svg>
+      <span class="top-logo">UnBook-I.P.M</span>
+    </div>
     <div class="top-right">
       <div class="user-chip">
         <div class="user-av" id="userAvatar">?</div>
@@ -374,11 +398,12 @@ tr:hover td{background:rgba(255,255,255,.02)}
             <p class="svc-desc">Impressão, fotocópias e encadernação de documentos.</p>
             <p class="svc-price">Cópia: 2 MT · Impressão: 3 MT · Encadernação: 40 MT</p>
           </div>
-          <div class="svc-card a dis">
+          <div class="svc-card a" onclick="openModal('design')">
+            <span class="svc-arr">↗</span>
             <div class="svc-ic a">🎨</div>
             <p class="svc-name">Design Gráfico</p>
             <p class="svc-desc">Logótipos, banners, cartazes e material visual profissional.</p>
-            <p class="svc-price" style="color:var(--amber)">Em breve</p>
+            <p class="svc-price" style="color:var(--amber)">sob orçamento</p>
           </div>
         </div>
 
@@ -504,7 +529,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
           <div class="p-row"><span>Trabalhos Científicos</span><span class="p-val">24 – 48 horas</span></div>
           <div class="p-row"><span>Soluções Informáticas</span><span class="p-val">2 – 12 horas</span></div>
           <div class="p-row"><span>Impressão & Cópias</span><span class="p-val">Imediato – 2 horas</span></div>
-          <div class="p-row"><span>Design Gráfico</span><span class="p-val">Em breve</span></div>
+          <div class="p-row"><span>Design Gráfico</span><span class="p-val">24 – 72 horas</span></div>
         </div>
       </div>
 
@@ -513,7 +538,18 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <h1 class="page-title">Sobre a UnBook</h1>
         <p class="page-sub">Plataforma académica de referência em Moçambique.</p>
         <div class="about-card">
-          <p class="a-logo">UnBook</p>
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem">
+            <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="52" height="52" rx="14" fill="url(#lg3)"/>
+              <path d="M14 17h7v13a5 5 0 0010 0V17h7v13a12 12 0 01-24 0V17z" fill="white" opacity=".96"/>
+              <circle cx="38" cy="35" r="4" fill="white" opacity=".6"/>
+              <defs><linearGradient id="lg3" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse"><stop stop-color="#00c853"/><stop offset="1" stop-color="#00695c"/></linearGradient></defs>
+            </svg>
+            <div>
+              <p class="a-logo" style="margin-bottom:0">UnBook</p>
+              <p style="font-size:.7rem;font-family:var(--mono);color:var(--mut)">Solutions</p>
+            </div>
+          </div>
           <p class="a-tag">Soluções académicas e tecnológicas de confiança</p>
           <div class="a-row"><span class="a-key">Desenvolvedor & Director</span><span class="a-val">Tomás José</span></div>
           <div class="a-row"><span class="a-key">Empresa</span><span class="a-val">UnBook Solutions</span></div>
@@ -607,7 +643,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </div>
 </div>
 
-<!-- ═══ MODAL: IMPRESSÃO ═══ -->
+<!-- ═══ MODAL: IMPRESSÃO (com upload) ═══ -->
 <div id="modalImpressao" class="modal-overlay">
   <div class="modal">
     <div class="mh">
@@ -622,7 +658,34 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <div class="fg"><label class="fl">Nº de páginas *</label><input class="fi" type="number" id="imp_paginas" min="1" value="1" onchange="calcImpressao()" oninput="calcImpressao()"></div>
       </div>
       <div class="fg"><label class="fl">Nome do documento</label><input class="fi" type="text" id="imp_doc" placeholder="Nome do ficheiro ou documento"></div>
-      <div class="fg"><label class="fl">Observações</label><textarea class="fi" id="imp_obs" placeholder="Cor, tamanho, frente-e-verso..."></textarea></div>
+
+      <!-- UPLOAD DE DOCUMENTO -->
+      <div class="fg">
+        <label class="fl">Documento a imprimir (opcional)</label>
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imp_file').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+          <input type="file" id="imp_file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display:none" onchange="handleFileSelect(event)">
+          <div id="uploadPlaceholder">
+            <div style="font-size:2rem;margin-bottom:.5rem">📄</div>
+            <p style="font-size:.85rem;font-weight:600;color:var(--txt)">Clica ou arrasta o ficheiro aqui</p>
+            <p style="font-size:.75rem;color:var(--mut);margin-top:.25rem">PDF, Word, JPG, PNG — máx. 10MB</p>
+          </div>
+          <div id="uploadPreview" style="display:none">
+            <div style="display:flex;align-items:center;gap:.75rem">
+              <div id="uploadThumb" style="width:48px;height:48px;border-radius:var(--rs);background:rgba(0,200,83,.1);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0"></div>
+              <div style="flex:1;min-width:0">
+                <p id="uploadName" style="font-size:.84rem;font-weight:600;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></p>
+                <p id="uploadSize" style="font-size:.74rem;color:var(--mut2);margin-top:.15rem"></p>
+              </div>
+              <button onclick="clearUpload(event)" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.2);border-radius:var(--rx);color:var(--red);padding:.25rem .5rem;font-size:.75rem;cursor:pointer">✕ Remover</button>
+            </div>
+            <div id="uploadNote" style="margin-top:.65rem;padding:.5rem .75rem;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.15);border-radius:var(--rx);font-size:.75rem;color:#93c5fd">
+              ℹ️ O ficheiro será mencionado na mensagem WhatsApp. Podes enviá-lo diretamente pelo WhatsApp após abrir a conversa.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fg"><label class="fl">Observações</label><textarea class="fi" id="imp_obs" placeholder="Cor, tamanho, frente-e-verso, número de cópias por página..."></textarea></div>
       <div class="orc-preview">
         <p class="orc-preview-label">Total estimado</p>
         <p class="orc-preview-total" id="impTotal">—</p>
@@ -631,6 +694,83 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <div class="mf">
       <button class="btn-cancel" onclick="closeModal('impressao')">Cancelar</button>
       <button class="btn-wa" onclick="enviarImpressao()">
+        <svg class="wa-ic" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Enviar via WhatsApp
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: DESIGN GRÁFICO ═══ -->
+<div id="modalDesign" class="modal-overlay">
+  <div class="modal">
+    <div class="mh">
+      <div class="mhw"><span style="font-size:1.3rem">🎨</span><span class="mt-title">Design Gráfico</span></div>
+      <button class="mc" onclick="closeModal('Design')">✕</button>
+    </div>
+    <div class="mb">
+      <div class="fg"><label class="fl">Tipo de trabalho *</label>
+        <select class="fi" id="dg_tipo">
+          <option value="">Selecionar...</option>
+          <option>Logótipo / Marca</option>
+          <option>Banner / Post para redes sociais</option>
+          <option>Cartaz / Flyer</option>
+          <option>Cartão de visita</option>
+          <option>Capa de trabalho académico</option>
+          <option>Convite / Certificado</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Formato de entrega *</label>
+          <select class="fi" id="dg_formato">
+            <option value="">Selecionar...</option>
+            <option>PNG</option><option>PDF</option><option>JPG</option><option>SVG</option><option>Todos os formatos</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Prazo *</label>
+          <input class="fi" type="text" id="dg_prazo" placeholder="Ex: 3 dias">
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Descrição / Briefing *</label>
+        <textarea class="fi" id="dg_desc" style="min-height:90px" placeholder="Descreve o que precisas: nome da empresa, cores preferidas, estilo, referências..."></textarea>
+      </div>
+
+      <!-- Upload de referência -->
+      <div class="fg">
+        <label class="fl">Imagem de referência ou logótipo actual (opcional)</label>
+        <div class="upload-zone" id="uploadZoneDesign" onclick="document.getElementById('dg_file').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFileDesign(event)">
+          <input type="file" id="dg_file" accept=".pdf,.jpg,.jpeg,.png,.svg" style="display:none" onchange="handleFileDesign(event)">
+          <div id="uploadPlaceholderDesign">
+            <div style="font-size:2rem;margin-bottom:.5rem">🖼️</div>
+            <p style="font-size:.85rem;font-weight:600;color:var(--txt)">Clica ou arrasta uma imagem/referência</p>
+            <p style="font-size:.75rem;color:var(--mut);margin-top:.25rem">JPG, PNG, SVG, PDF</p>
+          </div>
+          <div id="uploadPreviewDesign" style="display:none">
+            <div style="display:flex;align-items:center;gap:.75rem">
+              <div id="uploadThumbDesign" style="width:48px;height:48px;border-radius:var(--rs);background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;overflow:hidden"></div>
+              <div style="flex:1;min-width:0">
+                <p id="uploadNameDesign" style="font-size:.84rem;font-weight:600;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></p>
+                <p id="uploadSizeDesign" style="font-size:.74rem;color:var(--mut2);margin-top:.15rem"></p>
+              </div>
+              <button onclick="clearUploadDesign(event)" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.2);border-radius:var(--rx);color:var(--red);padding:.25rem .5rem;font-size:.75rem;cursor:pointer">✕</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fr">
+        <div class="fg"><label class="fl">Pagamento *</label>
+          <select class="fi" id="dg_pagamento"><option value="">Selecionar...</option><option>M-Pesa</option><option>e-Mola</option><option>Transferência</option><option>Presencial</option></select>
+        </div>
+        <div class="fg"><label class="fl">Contacto de retorno</label>
+          <input class="fi" type="text" id="dg_contacto" placeholder="WhatsApp ou email">
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn-cancel" onclick="closeModal('Design')">Cancelar</button>
+      <button class="btn-wa" onclick="enviarDesign()" style="background:linear-gradient(135deg,var(--amber),#d97706)">
         <svg class="wa-ic" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
         Enviar via WhatsApp
       </button>
@@ -876,6 +1016,7 @@ Contacto: ${user?user.contacto:'—'}
 • *Documento:* ${v('imp_doc')}
 • *Total:* ${document.getElementById('impTotal').textContent}
 
+${uploadedFile?`*📎 FICHEIRO ANEXADO:* ${uploadedFile.name} (${formatBytes(uploadedFile.size)})\n_(Enviar o ficheiro nesta conversa)_\n`:''}
 *📝 OBS:* ${v('imp_obs')}
 
 ⏱ Enviado: ${now()}`;
@@ -884,12 +1025,14 @@ Contacto: ${user?user.contacto:'—'}
 function enviarImpressao(){
   if(!validar(['imp_tipo','imp_paginas'])) return;
   const tot=document.getElementById('impTotal').textContent;
-  const newOrder={id:nextId++,tema:'Impressão — '+v('imp_paginas')+' pág.',servico:'Impressão',cliente:user.contacto,status:'Recebido',data:todayStr(),orcamento:parseInt(tot)||0,formando:'',codigo:''};
+  const nomeDoc=uploadedFile?uploadedFile.name:v('imp_doc');
+  const newOrder={id:nextId++,tema:'Impressão — '+(nomeDoc||v('imp_paginas')+' pág.'),servico:'Impressão',cliente:user.contacto,status:'Recebido',data:todayStr(),orcamento:parseInt(tot)||0,formando:'',codigo:''};
   orders.unshift(newOrder);
   window.open(`https://wa.me/${WA}?text=${encodeURIComponent(gerarMsgImpressao())}`,'_blank');
   closeModal('impressao');
-  toast('✅ WhatsApp aberto! Pedido registado.');
+  toast('✅ WhatsApp aberto! Pedido registado.'+(uploadedFile?' Envia o ficheiro na conversa.':''));
   document.querySelectorAll('#modalImpressao .fi').forEach(e=>e.value='');
+  clearUpload({stopPropagation:()=>{}});
   refreshBadges(); renderMyOrders(); renderAdminDashboard(); renderAllOrders();
 }
 
@@ -1057,6 +1200,138 @@ async function askAI(){
 }
 
 document.getElementById('aiInput').addEventListener('keydown',e=>{if(e.key==='Enter')askAI()});
+
+// ── UPLOAD IMPRESSÃO ──
+let uploadedFile = null;
+let uploadedFileDesign = null;
+
+function dragOver(e){e.preventDefault();document.getElementById('uploadZone').classList.add('drag-over')}
+function dragLeave(e){document.getElementById('uploadZone').classList.remove('drag-over')}
+function dropFile(e){
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag-over');
+  const f=e.dataTransfer.files[0];
+  if(f) processUpload(f);
+}
+function handleFileSelect(e){const f=e.target.files[0];if(f) processUpload(f)}
+
+function processUpload(f){
+  const maxMB=10;
+  if(f.size>maxMB*1024*1024){toast(`❌ Ficheiro demasiado grande. Máx ${maxMB}MB.`,'err');return;}
+  uploadedFile=f;
+  const zone=document.getElementById('uploadZone');
+  zone.classList.add('has-file');
+  document.getElementById('uploadPlaceholder').style.display='none';
+  const preview=document.getElementById('uploadPreview');
+  preview.style.display='block';
+  document.getElementById('uploadName').textContent=f.name;
+  document.getElementById('uploadSize').textContent=formatBytes(f.size);
+  const ext=f.name.split('.').pop().toLowerCase();
+  const icons={pdf:'📄',doc:'📝',docx:'📝',jpg:'🖼️',jpeg:'🖼️',png:'🖼️'};
+  const thumb=document.getElementById('uploadThumb');
+  if(['jpg','jpeg','png'].includes(ext)){
+    const r=new FileReader();
+    r.onload=ev=>{thumb.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--rs)">`};
+    r.readAsDataURL(f);
+  } else {
+    thumb.textContent=icons[ext]||'📎';
+  }
+  // auto-fill nome do documento
+  if(!document.getElementById('imp_doc').value){
+    document.getElementById('imp_doc').value=f.name.replace(/\.[^.]+$/,'');
+  }
+  toast('📄 Ficheiro carregado: '+f.name);
+}
+
+function clearUpload(e){
+  e.stopPropagation();
+  uploadedFile=null;
+  const zone=document.getElementById('uploadZone');
+  zone.classList.remove('has-file');
+  document.getElementById('uploadPlaceholder').style.display='block';
+  document.getElementById('uploadPreview').style.display='none';
+  document.getElementById('imp_file').value='';
+}
+
+// ── UPLOAD DESIGN ──
+function dragOver2(e){e.preventDefault();document.getElementById('uploadZoneDesign').classList.add('drag-over')}
+function dragLeave2(e){document.getElementById('uploadZoneDesign').classList.remove('drag-over')}
+function dropFileDesign(e){
+  e.preventDefault();
+  document.getElementById('uploadZoneDesign').classList.remove('drag-over');
+  const f=e.dataTransfer.files[0];
+  if(f) processUploadDesign(f);
+}
+function handleFileDesign(e){const f=e.target.files[0];if(f) processUploadDesign(f)}
+
+function processUploadDesign(f){
+  uploadedFileDesign=f;
+  const zone=document.getElementById('uploadZoneDesign');
+  zone.classList.add('has-file');
+  document.getElementById('uploadPlaceholderDesign').style.display='none';
+  const preview=document.getElementById('uploadPreviewDesign');
+  preview.style.display='block';
+  document.getElementById('uploadNameDesign').textContent=f.name;
+  document.getElementById('uploadSizeDesign').textContent=formatBytes(f.size);
+  const ext=f.name.split('.').pop().toLowerCase();
+  const thumb=document.getElementById('uploadThumbDesign');
+  if(['jpg','jpeg','png','svg'].includes(ext)&&ext!=='svg'){
+    const r=new FileReader();
+    r.onload=ev=>{thumb.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--rs)">`};
+    r.readAsDataURL(f);
+  } else {
+    thumb.textContent='🖼️';
+  }
+  toast('🖼️ Referência carregada!');
+}
+
+function clearUploadDesign(e){
+  e.stopPropagation();
+  uploadedFileDesign=null;
+  const zone=document.getElementById('uploadZoneDesign');
+  zone.classList.remove('has-file');
+  document.getElementById('uploadPlaceholderDesign').style.display='block';
+  document.getElementById('uploadPreviewDesign').style.display='none';
+  document.getElementById('dg_file').value='';
+}
+
+function formatBytes(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB';}
+
+// ── ENVIO DESIGN GRÁFICO ──
+function gerarMsgDesign(){
+  return `╔══════════════════════════════╗
+║  🎨 PEDIDO DE DESIGN        ║
+╚══════════════════════════════╝
+
+*👤 SOLICITANTE*
+Contacto: ${user?user.contacto:'—'}
+Retorno: ${v('dg_contacto')}
+
+*🖌 DETALHES DO PROJECTO*
+• *Tipo:* ${v('dg_tipo')}
+• *Formato:* ${v('dg_formato')}
+• *Prazo:* ${v('dg_prazo')}
+• *Pagamento:* ${v('dg_pagamento')}
+
+*📋 BRIEFING*
+${v('dg_desc')}
+
+${uploadedFileDesign?`*📎 REFERÊNCIA ANEXADA:* ${uploadedFileDesign.name}\n_(Enviar o ficheiro nesta conversa)_`:''}
+
+⏱ Enviado: ${now()}`;
+}
+
+function enviarDesign(){
+  if(!validar(['dg_tipo','dg_formato','dg_prazo','dg_desc','dg_pagamento'])) return;
+  const newOrder={id:nextId++,tema:v('dg_tipo')+' — '+v('dg_desc').substring(0,30),servico:'Design',cliente:user.contacto,status:'Recebido',data:todayStr(),orcamento:0,formando:'',codigo:''};
+  orders.unshift(newOrder);
+  window.open(`https://wa.me/${WA}?text=${encodeURIComponent(gerarMsgDesign())}`,'_blank');
+  closeModal('Design');
+  toast('✅ WhatsApp aberto! Pedido de design registado.');
+  document.querySelectorAll('#modalDesign .fi').forEach(e=>e.value='');
+  clearUploadDesign({stopPropagation:()=>{}});
+  refreshBadges(); renderMyOrders(); renderAdminDashboard(); renderAllOrders();
+}
 
 // ── TOAST ──
 function toast(msg, type=''){
